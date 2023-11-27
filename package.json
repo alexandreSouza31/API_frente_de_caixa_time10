@@ -1,0 +1,40 @@
+{
+  "name": "desafio-backend-modulo-05-sistema-pdv-dbe-b2b-t07-ifood",
+  "version": "1.0.0",
+  "description": "![](https://i.imgur.com/xG74tOh.png)",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./src/index.js",
+    "dev": "nodemon ./src/index.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexandreSouza31/desafio-backend-modulo-05-sistema-pdv-dbe-b2b-t07-ifood.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alexandreSouza31/desafio-backend-modulo-05-sistema-pdv-dbe-b2b-t07-ifood/issues"
+  },
+  "homepage": "https://github.com/alexandreSouza31/desafio-backend-modulo-05-sistema-pdv-dbe-b2b-t07-ifood#readme",
+  "dependencies": {
+    "aws-sdk": "^2.1498.0",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "handlebars": "^4.7.8",
+    "joi": "^17.11.0",
+    "jsonwebtoken": "^9.0.2",
+    "knex": "^3.0.1",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.7",
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1",
+    "supertest": "^6.3.3"
+  }
+}
