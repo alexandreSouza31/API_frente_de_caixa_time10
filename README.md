@@ -114,7 +114,7 @@ obs:Caso queira testar o Jest siga os passos abaixo:
    Obs: Lembre-se de preencher sem espaços!
 
 #### passo 5 - Iniciando o projeto
-1. Inicie o servidor digitando `npm run dev` no terminal;
+1. Inicie o servidor digitando `npm run dev` no terminal, ou use o Deploy: `https://desafiofinal-grupo10-cubos-ac.cyclic.app`;
 2.  O servidor estará em execução em http://localhost:3000;
 3. Use o Insomnia, Postman ou alguma extensão no seu programa de ambiente de desenvolvimento como o Thunder client do VS Code, por exemplo, para fazer as requisições;
 4. Para testar os endpoints escreva as rotas com os parâmetros, a depender, de cada requisição;
