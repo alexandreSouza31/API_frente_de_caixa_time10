@@ -21,7 +21,7 @@ Trata-se de uma Restful API de uma aplicação de para um PDV (Frente de Caixa).
   
 - [Uso](#Uso)
 - [Contribuição](#Contribuição)
-- [Autor](#autor)
+- [Autores](#Autores)
 
 ## Visão geral
 
