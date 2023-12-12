@@ -2,18 +2,19 @@ const knex = require("../bancoDeDados/conexao");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { validarEmailUsuario } = require("../intermediarios/verificarDuplicacoes");
+const verificarSenhaCorretaAdm = require("../utils/verificarSenhaCorretaAdm");
 
 const detalharPerfilUsuario = async (req, res) => {
   try {
     const resposta = req.usuario;
     res.status(200).json(resposta);
   } catch (error) {
-    return res.status(500).json({mensagem: 'Erro interno do servidor'})
+    return res.status(500).json({ mensagem: 'Erro interno do servidor' })
   }
 };
 
 const editarPerfil = async (req, res) => {
-  const { nome, email, senha } = req.body;
+  let { nome, email, senha, adm } = req.body;
   const { id } = req.usuario;
   try {
     const usuario = await validarEmailUsuario(email)
@@ -23,6 +24,18 @@ const editarPerfil = async (req, res) => {
         .status(400)
         .json({ mensagem: "O e-mail informado pertence a outro usuário." });
     }
+    
+    let ehAdm;
+
+    if (adm === "false") {
+      ehAdm = false;
+    } else if (verificarSenhaCorretaAdm(adm)) {
+      ehAdm = true;
+    }
+    
+    if (adm && adm !== process.env.EH_ADM && adm !== "false") {
+      return res.status(401).json({ mensagem: 'Credenciais de administrador incorretas! Verifique o valor de adm ou apague o campo.' });
+    }
 
     const senhaCriptografada = await bcrypt.hash(senha, 10);
     await knex("usuarios")
@@ -30,8 +43,10 @@ const editarPerfil = async (req, res) => {
         nome,
         email,
         senha: senhaCriptografada,
+        ehAdm
       })
       .where({ id });
+
     res.status(200).json({ mensagem: "Perfil atualizado com sucesso" });
   } catch (error) {
     return res.status(500).json({mensagem: 'Erro interno do servidor'})
@@ -39,36 +54,62 @@ const editarPerfil = async (req, res) => {
 };
 
 const cadastrarUsuario = async (req, res) => {
-  const { nome, email, senha } = req.body;
+  const { nome, email, senha, adm } = req.body;
   try {
     const usuario = await validarEmailUsuario(email);
-    
+
     if (usuario) {
+      console.log("O e-mail informado pertence a outro usuário.")
       return res
         .status(400)
         .json({ mensagem: "O e-mail informado pertence a outro usuário." });
     }
 
+
+    if (adm !== process.env.EH_ADM) {
+      return res
+        .status(401)
+        .json({ mensagem: 'Credenciais de administrador incorretas! Verifique a senha ou apague o campo!' })
+    }
+
     const senhaCriptografada = await bcrypt.hash(senha, 10);
+
+
+    // // Adicione o novo campo 'ehAdm' à tabela 'usuarios'
+    // await knex.schema.alterTable('usuarios', (table) => {
+    //   table.boolean('ehAdm').defaultTo(false);
+    // });
 
     const novoUsuario = await knex("usuarios")
       .insert({
         nome,
         email,
         senha: senhaCriptografada,
+        // ehAdm: adm === process.env.EH_ADM
+        ehAdm: verificarSenhaCorretaAdm(adm)
       })
-      .returning(["id", "nome", "email"]);
+      .returning(["id", "nome", "email", "ehAdm"]);
+    
 
     return res.status(201).json(novoUsuario);
   } catch (error) {
-    return res.status(500).json({mensagem: 'Erro interno do servidor'})
-    
+    return res.status(500).json({ mensagem: 'Erro interno do servidor' })
+
   }
 };
 
+const listarUsuarios = async (req, res) => {
+  try {
+    const usuarios = await knex("usuarios");
+    return res.status(200).json(usuarios);
+  } catch (error) {
+    return res.status(500).json({ mensagem: 'Erro interno do servidor' });
+  }
+}
+
 const login = async (req, res) => {
   const { senha, email } = req.body;
-  
+
   try {
     const emailEncontrado = await validarEmailUsuario(email);
 
@@ -76,21 +117,21 @@ const login = async (req, res) => {
       return res.status(400).json({ mensagem: "Credenciais Invalidas" });
     }
 
-        const senhaCorreta = await bcrypt.compare(senha, emailEncontrado.senha)
+    const senhaCorreta = await bcrypt.compare(senha, emailEncontrado.senha)
 
-        if (!senhaCorreta) {
-            return res.status(400).json({ mensagem: 'Credenciais inválidas.' })
-        }
-        
-        const { senha: _, ...usuario } = emailEncontrado
-        
-        const token = jwt.sign({ id: emailEncontrado.id }, process.env.CHAVE_SECRETA, { expiresIn: '2h' })
-        
-        return res.status(201).json({ usuario, token })
-
-    } catch (error) {      
-        return res.status(500).json({mensagem: 'Erro interno do servidor'})
+    if (!senhaCorreta) {
+      return res.status(400).json({ mensagem: 'Credenciais inválidas.' })
     }
+
+    const { senha: _, ...usuario } = emailEncontrado
+
+    const token = jwt.sign({ id: emailEncontrado.id }, process.env.CHAVE_SECRETA, { expiresIn: '2h' })
+
+    return res.status(201).json({ usuario, token })
+
+  } catch (error) {
+    return res.status(500).json({ mensagem: 'Erro interno do servidor' })
+  }
 }
 
 module.exports = {
@@ -98,4 +139,5 @@ module.exports = {
   login,
   editarPerfil,
   detalharPerfilUsuario,
+  listarUsuarios
 };
