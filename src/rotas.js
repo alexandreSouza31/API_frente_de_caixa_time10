@@ -5,6 +5,7 @@ const {
   login,
   detalharPerfilUsuario,
   editarPerfil,
+  listarUsuarios,
 } = require("./controladores/usuarios");
 
 const { 
@@ -28,7 +29,7 @@ const joiCadastrar = require("./esquemas/esquemaCliente");
 const { joiPedido } = require("./esquemas/esquemaPedido");
 
 const multer = require('./intermediarios/multer')
-const s3 = require('./serviços/s3')
+const s3 = require('./serviços/s3');
 
 const rotas = express();
 
@@ -48,6 +49,7 @@ rotas.post("/usuario", validarCorpo(joiUsuario), cadastrarUsuario);
 rotas.post("/login", validarCorpo(joiLogin), login);
 
 rotas.use(autenticadorUsuario);
+rotas.get("/usuarios", listarUsuarios)
 
 rotas.get("/usuario", detalharPerfilUsuario);
 rotas.get("/pedido", listarPedidos);
