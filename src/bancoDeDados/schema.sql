@@ -12,6 +12,8 @@ create table
         senha text
     );
 
+ALTER TABLE usuarios ADD COLUMN ehAdm BOOLEAN DEFAULT FALSE;
+
 drop table if exists categorias;
 
 create table
