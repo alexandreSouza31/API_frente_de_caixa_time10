@@ -18,7 +18,7 @@ const autenticadorUsuario = async (req, res, next) => {
             return res.status(401).json({mensagem: 'Não autorizado'})
         }
     
-        req.usuario = {id: usuario.id, nome: usuario.nome, email: usuario.email}
+        req.usuario = {id: usuario.id, nome: usuario.nome, email: usuario.email, ehAdm: usuario.ehAdm}
     
         next()
     } catch (error) {
