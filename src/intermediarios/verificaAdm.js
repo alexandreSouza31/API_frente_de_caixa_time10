@@ -1,12 +1,14 @@
-const verificarPermissaoAdmin = async (req, res, next) => {
-    const { adm } = req.usuario;
+const verificarSenhaCorretaAdm = require("../utils/verificarSenhaCorretaAdm");
 
-    if (req.usuario && (adm && adm !== process.env.EH_ADM)) {
+const verificarPermissaoAdmin = async (req, res, next) => {
+    const { ehAdm } = req.usuario;
+
+    if (req.usuario && (ehAdm && !verificarSenhaCorretaAdm(ehAdm))) {
         next();
     } else {
-        return res.status(403).json({ mensagem: "Acesso negado. Você não é um administrador." });
+        return res.status(403).json({ mensagem: "Acesso negado. Você não é um ehAdministrador." });
     }
 };
 
 
-module.exports = {verificarPermissaoAdmin};
+module.exports = { verificarPermissaoAdmin };
