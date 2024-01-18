@@ -14,7 +14,7 @@ const detalharPerfilUsuario = async (req, res) => {
 };
 
 const editarPerfil = async (req, res) => {
-  let { nome, email, senha } = req.body;
+  let { nome, email, senha, adm } = req.body;
   const { id } = req.usuario;
   try {
     const usuario = await validarEmailUsuario(email)
@@ -25,18 +25,31 @@ const editarPerfil = async (req, res) => {
         .json({ mensagem: "O e-mail informado pertence a outro usuário." });
     }
 
+    let ehAdm;
+
+    if (adm === "false") {
+      ehAdm = false;
+    } else if (verificarSenhaCorretaAdm(adm)) {
+      ehAdm = true;
+    }
+
+    if (adm && !verificarSenhaCorretaAdm(adm) && adm !== "false") {
+      return res.status(401).json({ mensagem: 'Credenciais de administrador incorretas! Verifique o valor de adm ou apague o campo.' });
+    }
+
     const senhaCriptografada = await bcrypt.hash(senha, 10);
     await knex("usuarios")
       .update({
         nome,
         email,
         senha: senhaCriptografada,
+        ehAdm
       })
       .where({ id });
 
     res.status(200).json({ mensagem: "Perfil atualizado com sucesso" });
   } catch (error) {
-    return res.status(500).json({mensagem: 'Erro interno do servidor'})
+    return res.status(500).json({ mensagem: 'Erro interno do servidor' })
   }
 };
 
