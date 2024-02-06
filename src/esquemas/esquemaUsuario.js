@@ -13,6 +13,12 @@ const joiUsuario = joi.object({
   senha: joi.string().required().messages(
     gerarMensagens("senha")
   ),
+  
+  adm: joi.string().messages(
+    gerarMensagens("adm")
+    
+  ),
+
 });
 
 module.exports = joiUsuario;
