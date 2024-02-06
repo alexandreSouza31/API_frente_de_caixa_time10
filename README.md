@@ -1,6 +1,6 @@
 # API Frente de caixa - Time 10
 
-Trata-se de uma Restful API de uma aplicação de para um PDV (Frente de Caixa). Foi o desafio final no Curso de formação para Backend na Cubos Academy em parceria com o Ifood, desenvolvido em grupo. Utilizamos da metodologia SCRUM e o Trello para o dia a dia do desenvolvimento.
+Trata-se de uma Restful API de uma aplicação de para um PDV (Frente de Caixa). Foi o desafio final no Curso de formação para Backend na Cubos Academy em parceria com o Ifood, desenvolvido em grupo. Utilizamos da metodologia SCRUM e o Trello para o dia a dia do desenvolvimento. Entretanto, implementei algumas funcionalidades com a nova propriedade de administrador do sistema.
 
 ## Sumário
 
@@ -27,13 +27,23 @@ Trata-se de uma Restful API de uma aplicação de para um PDV (Frente de Caixa).
 
 ### Prints
 
+Pedidos realizados para os clientes:
 ![image](https://github.com/alexandreSouza31/API_frente_de_caixa_time10/assets/112407769/30f9fd0a-4cd1-44a5-862c-6d1ec784cd5f)
 
+Categorias disponíveis para produtos:
 ![image](https://github.com/alexandreSouza31/API_frente_de_caixa_time10/assets/112407769/d638b938-2cc7-4ae9-b67a-1c3de5c4d807)
 
+Email recebido após pedido realizado:
 ![image](https://github.com/alexandreSouza31/API_frente_de_caixa_time10/assets/112407769/e7fc0dfc-1dfd-47dc-ba6e-a97fb13b0cd3)
 
+Clientes cadastrados:
 ![image](https://github.com/alexandreSouza31/API_frente_de_caixa_time10/assets/112407769/31d57863-4291-45c3-a11d-83179e379b16)
+
+Usuário tentando excluir outro sem ser administrador:
+![image](https://github.com/alexandreSouza31/API_frente_de_caixa_time10/assets/112407769/68ef8f1b-ea95-46aa-a226-351fb0d0f27d)
+
+Usuário administrador excluindo outros usuários em bloco:
+![image](https://github.com/alexandreSouza31/API_frente_de_caixa_time10/assets/112407769/2074a07b-b43e-4c62-8166-07ab3f5c02f7)
 
 
 ## O processo
@@ -114,7 +124,7 @@ obs:Caso queira testar o Jest siga os passos abaixo:
    Obs: Lembre-se de preencher sem espaços!
 
 #### passo 5 - Iniciando o projeto
-1. Inicie o servidor digitando `npm run dev` no terminal, ou use o Deploy: `https://desafiofinal-grupo10-cubos-ac.cyclic.app`;
+1. Inicie o servidor digitando `npm run dev` no terminal, ou use a url de Deploy: `https://pdv-time10.cyclic.app/`;
 2.  O servidor estará em execução em http://localhost:3000;
 3. Use o Insomnia, Postman ou alguma extensão no seu programa de ambiente de desenvolvimento como o Thunder client do VS Code, por exemplo, para fazer as requisições;
 4. Para testar os endpoints escreva as rotas com os parâmetros, a depender, de cada requisição;
@@ -137,6 +147,7 @@ A seguir estão as principais funcionalidades e endpoints da API:
   - Verifica se o e-mail informado já está em uso.
   - Valida os campos obrigatórios do usuário.
 - **Controlador**: `cadastrarUsuario`
+- obs: propriedade `adm` é opcional na requisição, com seu valor podendo ser igual a senha pré-definida no .env para se tornar administrador.
 
 #### Login
 
@@ -165,6 +176,7 @@ A seguir estão as principais funcionalidades e endpoints da API:
   - Verificação da autenticação do usuário.
   - Validação dos campos de entrada.
 - **Controlador**: `editarPerfil`
+- - obs: propriedade `adm` é opcional na requisição, com seu valor podendo ser igual a senha pré-definida no .env para se tornar administrador, ou com o valor `false`, para perder os provilégios, se já for administrador.
 
 ### Rotas de Pedidos
 
@@ -282,6 +294,17 @@ A seguir estão as principais funcionalidades e endpoints da API:
   - Verificação da autenticação do usuário.
   - Validação dos campos de entrada.
 - **Controlador**: `editarPerfilCliente`
+
+#### Excluir Usuário por ID
+
+- **Descrição**: Permite a exclusão de um ou mais usuários pelo seu ID.
+- **Método HTTP**: DELETE
+- **Rota**: `/usuarios`
+- **Intermediários**:
+  - Verificação da autenticação do usuário.
+  - Validação do ID do usuário.
+  - Permissão de administrador para acessar.
+- **Controlador**: `excluirUsuarioPorId`
 
 
 
