@@ -31,6 +31,7 @@ const { joiPedido } = require("./esquemas/esquemaPedido");
 const multer = require('./intermediarios/multer')
 const s3 = require('./serviços/s3');
 const {verificarPermissaoAdmin} = require("./intermediarios/verificaAdm");
+const { excluirUsuarioPorId } = require("./controladoresAdm/usuariosAdm");
 
 const rotas = express();
 
@@ -50,7 +51,8 @@ rotas.post("/usuario", validarCorpo(joiUsuario), cadastrarUsuario);
 rotas.post("/login", validarCorpo(joiLogin), login);
 
 rotas.use(autenticadorUsuario);
-rotas.get("/usuarios",verificarPermissaoAdmin, listarUsuarios)
+rotas.get("/usuarios", verificarPermissaoAdmin, listarUsuarios);
+rotas.delete("/excluirUsuario", verificarPermissaoAdmin, excluirUsuarioPorId);
 
 rotas.get("/usuario", detalharPerfilUsuario);
 rotas.get("/pedido", listarPedidos);
