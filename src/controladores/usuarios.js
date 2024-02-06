@@ -14,7 +14,7 @@ const detalharPerfilUsuario = async (req, res) => {
 };
 
 const editarPerfil = async (req, res) => {
-  let { nome, email, senha, adm } = req.body;
+  let { nome, email, senha } = req.body;
   const { id } = req.usuario;
   try {
     const usuario = await validarEmailUsuario(email)
@@ -24,18 +24,6 @@ const editarPerfil = async (req, res) => {
         .status(400)
         .json({ mensagem: "O e-mail informado pertence a outro usuário." });
     }
-    
-    let ehAdm;
-
-    if (adm === "false") {
-      ehAdm = false;
-    } else if (verificarSenhaCorretaAdm(adm)) {
-      ehAdm = true;
-    }
-    
-    if (adm && adm !== process.env.EH_ADM && adm !== "false") {
-      return res.status(401).json({ mensagem: 'Credenciais de administrador incorretas! Verifique o valor de adm ou apague o campo.' });
-    }
 
     const senhaCriptografada = await bcrypt.hash(senha, 10);
     await knex("usuarios")
@@ -43,7 +31,6 @@ const editarPerfil = async (req, res) => {
         nome,
         email,
         senha: senhaCriptografada,
-        ehAdm
       })
       .where({ id });
 
@@ -59,14 +46,13 @@ const cadastrarUsuario = async (req, res) => {
     const usuario = await validarEmailUsuario(email);
 
     if (usuario) {
-      console.log("O e-mail informado pertence a outro usuário.")
       return res
         .status(400)
         .json({ mensagem: "O e-mail informado pertence a outro usuário." });
     }
 
 
-    if (adm !== process.env.EH_ADM) {
+    if (!verificarSenhaCorretaAdm(adm)) {
       return res
         .status(401)
         .json({ mensagem: 'Credenciais de administrador incorretas! Verifique a senha ou apague o campo!' })
@@ -74,22 +60,15 @@ const cadastrarUsuario = async (req, res) => {
 
     const senhaCriptografada = await bcrypt.hash(senha, 10);
 
-
-    // // Adicione o novo campo 'ehAdm' à tabela 'usuarios'
-    // await knex.schema.alterTable('usuarios', (table) => {
-    //   table.boolean('ehAdm').defaultTo(false);
-    // });
-
     const novoUsuario = await knex("usuarios")
       .insert({
         nome,
         email,
         senha: senhaCriptografada,
-        // ehAdm: adm === process.env.EH_ADM
         ehAdm: verificarSenhaCorretaAdm(adm)
       })
       .returning(["id", "nome", "email", "ehAdm"]);
-    
+
 
     return res.status(201).json(novoUsuario);
   } catch (error) {
