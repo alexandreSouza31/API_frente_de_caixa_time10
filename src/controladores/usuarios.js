@@ -65,7 +65,7 @@ const cadastrarUsuario = async (req, res) => {
     }
 
 
-    if (!verificarSenhaCorretaAdm(adm)) {
+    if (adm && !verificarSenhaCorretaAdm(adm)) {
       return res
         .status(401)
         .json({ mensagem: 'Credenciais de administrador incorretas! Verifique a senha ou apague o campo!' })
