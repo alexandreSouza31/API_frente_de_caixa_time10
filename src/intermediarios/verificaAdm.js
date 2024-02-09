@@ -6,7 +6,7 @@ const verificarPermissaoAdmin = async (req, res, next) => {
     if (req.usuario && (ehAdm && !verificarSenhaCorretaAdm(ehAdm))) {
         next();
     } else {
-        return res.status(403).json({ mensagem: "Acesso negado. Você não é um ehAdministrador." });
+        return res.status(403).json({ mensagem: "Acesso negado. Você não é um Administrador." });
     }
 };
 
