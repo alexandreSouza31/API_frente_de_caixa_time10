@@ -65,7 +65,7 @@ const cadastrarUsuario = async (req, res) => {
     }
 
 
-    if (!verificarSenhaCorretaAdm(adm)) {
+    if (adm && !verificarSenhaCorretaAdm(adm)) {
       return res
         .status(401)
         .json({ mensagem: 'Credenciais de administrador incorretas! Verifique a senha ou apague o campo!' })
@@ -117,7 +117,7 @@ const login = async (req, res) => {
 
     const { senha: _, ...usuario } = emailEncontrado
 
-    const token = jwt.sign({ id: emailEncontrado.id }, process.env.CHAVE_SECRETA, { expiresIn: '2h' })
+    const token = jwt.sign({ id: emailEncontrado.id }, process.env.CHAVE_SECRETA, { expiresIn: `${process.env.VALIDADE_TOKEN_AUTENTICACAO}` });
 
     return res.status(201).json({ usuario, token })
 
