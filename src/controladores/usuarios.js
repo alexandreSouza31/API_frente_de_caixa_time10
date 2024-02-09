@@ -90,15 +90,6 @@ const cadastrarUsuario = async (req, res) => {
   }
 };
 
-const listarUsuarios = async (req, res) => {
-  try {
-    const usuarios = await knex("usuarios");
-    return res.status(200).json(usuarios);
-  } catch (error) {
-    return res.status(500).json({ mensagem: 'Erro interno do servidor' });
-  }
-}
-
 const login = async (req, res) => {
   const { senha, email } = req.body;
 
@@ -130,6 +121,5 @@ module.exports = {
   cadastrarUsuario,
   login,
   editarPerfil,
-  detalharPerfilUsuario,
-  listarUsuarios
+  detalharPerfilUsuario
 };

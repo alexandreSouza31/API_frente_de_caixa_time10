@@ -4,9 +4,10 @@ const {
   cadastrarUsuario,
   login,
   detalharPerfilUsuario,
-  editarPerfil,
-  listarUsuarios,
+  editarPerfil
 } = require("./controladores/usuarios");
+
+const { excluirUsuarioPorId, listarUsuarios } = require("./controladoresAdm/usuariosAdm");
 
 const { 
   cadastrarProduto,
@@ -31,7 +32,6 @@ const { joiPedido } = require("./esquemas/esquemaPedido");
 const multer = require('./intermediarios/multer')
 const s3 = require('./serviços/s3');
 const {verificarPermissaoAdmin} = require("./intermediarios/verificaAdm");
-const { excluirUsuarioPorId } = require("./controladoresAdm/usuariosAdm");
 
 const rotas = express();
 
